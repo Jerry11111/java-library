@@ -60,7 +60,7 @@ public class RhinoInstance {
 			Object date = Context.javaToJS(new Date(), scope);
 			ScriptableObject.putProperty(scope, "date", date);
 			String s = "out.println('s')";
-			s = "date;";
+			s = "date.getTime();";
 			Object result = cx.evaluateString(scope, s, null, 1, null);
 			System.err.println(Context.toString(result));
 		} finally {
