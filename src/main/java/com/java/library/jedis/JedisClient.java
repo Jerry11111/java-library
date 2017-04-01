@@ -1,5 +1,6 @@
 package com.java.library.jedis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -594,6 +595,31 @@ public class JedisClient {
 		List<Object> res = pipeline.syncAndReturnAll();
 		System.out.println(res);
 	 }
+	 // eval 执行lua脚本
+	 public static void testEval(){
+		JedisPoolConfig config = new JedisPoolConfig();
+		config.setMaxTotal(8);
+		config.setMaxIdle(8);
+		config.setMinIdle(0);
+		config.setMaxWaitMillis(-1);
+		config.setTestOnBorrow(true);
+		String host = "10.12.6.91";
+		int port = 6379;
+		JedisClient client = new JedisClient(config, host, port);
+		Jedis jedis = client.getJedis();
+		String script = "return redis.call('get','foo')";
+		Object res = jedis.eval(script);
+		System.out.println(String.format("[%s %s]", res.getClass(), res));
+		List<String> keys = new ArrayList<String>();
+		keys.add("key1");
+		keys.add("key2");
+		List<String> args = new ArrayList<String>();
+		args.add("first");
+		args.add("second");
+		String script2 = "return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}";
+		Object res2 = jedis.eval(script2, keys, args); // key作为参数
+		System.out.println(String.format("[%s %s]", res2.getClass(), res2));
+	 }
 	 
 	
 	public static void test(){
@@ -625,7 +651,7 @@ public class JedisClient {
 	}
 	
 	public static void main(String[]args){
-		testPipeline();
+		testEval();
 	}
 	
 
