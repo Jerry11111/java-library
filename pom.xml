@@ -40,11 +40,6 @@
 			<artifactId>netty-all</artifactId>
 			<version>4.0.36.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.7</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mozilla/rhino -->
 		<dependency>
 			<groupId>org.mozilla</groupId>
@@ -94,7 +89,6 @@
 			<version>3.4.6</version>
 			<type>pom</type>
 		</dependency>
-
 		
 	</dependencies>
 </project>
