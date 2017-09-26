@@ -1,0 +1,2 @@
+{ _id:"testrs", members:[ {_id:0,host:'10.10.148.130:27017',priority:2}, {_id:1,host:'10.10.148.131:27017',priority:1},   
+{_id:2,host:'10.10.148.132:27017',arbiterOnly:true}] }
