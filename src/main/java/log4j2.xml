@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<Async name="AsyncConsole" bufferSize="16384">
+			<AppenderRef ref="Console" />
+		</Async>
+		<RollingFile name="RLogRollingFile" fileName="e:/logs/rlog.log"
+			filePattern="e:/logs/$${date:yyyy-MM}/rlog-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5p] [%t] [%c{1}] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="16 MB" />
+			</Policies>
+		</RollingFile>
+		<Async name="AsyncRLogFile" bufferSize="16384">
+			<AppenderRef ref="RLogRollingFile" />
+		</Async>
+
+	</appenders>
+	<loggers>
+		<root level="info">
+			<appender-ref ref="AsyncConsole" />
+		</root>
+		<logger name="com.java.library.apache.log4j2" level="info"
+			additivity="false">
+			<appender-ref ref="AsyncConsole" />
+		</logger>
+	</loggers>
+</configuration>
