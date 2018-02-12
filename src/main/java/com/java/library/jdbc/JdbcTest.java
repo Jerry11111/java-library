@@ -160,6 +160,43 @@ public class JdbcTest {
 		}
 	}
 	
+	
+	public static void testCall3() {
+		String driver = "org.postgresql.Driver";
+		String user = "service2sync_admin";
+		String password = "service2sync_admin";
+		String url = "jdbc:postgresql://10.12.2.114:5432/Service2Sync";
+		
+		String sql = "{CALL insert_or_update_t_pay_total_stat('2018-02-02 00:00:00.0'::timestamp without time zone, 11, 2, 37, -8834480713977467200, 'SNOWFISH'::text, 1)}";
+		CallableStatement stm = null;
+		Connection conn = null;
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, password);
+			stm = conn.prepareCall(sql);
+//			stm.setObject(1, "roots");
+//			stm.setObject(2, "roots");
+			int res = stm.executeUpdate();
+			System.out.println(String.format("%d", res));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+			
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+		}
+	}
+	
 	// execute 既可以执行select也可以执行update
 	public static void testExecute() {
 		String driver = "org.postgresql.Driver";
@@ -240,7 +277,7 @@ public class JdbcTest {
 	}
 
 	public static void main(String[] args) {
-		testExecute();
+		testCall3();
 
 	}
 

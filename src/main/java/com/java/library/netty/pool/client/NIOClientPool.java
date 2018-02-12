@@ -115,8 +115,8 @@ public class NIOClientPool {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pipeline = ch.pipeline();
-						pipeline.addLast(new IdleStateHandler(0, 0, 5));
 						pipeline.addLast(new SelfDefineEncodeHandler());
+						pipeline.addLast(new IdleStateHandler(0, 0, 5));
 						NIOClientHandler clientHandler = new NIOClientHandler("client");
 						clientHandler.pool = NIOClientPool.this;
 						pipeline.addLast(clientHandler);

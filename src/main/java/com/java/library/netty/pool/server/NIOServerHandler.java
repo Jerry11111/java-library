@@ -51,6 +51,7 @@ public class NIOServerHandler extends HeartbeatHandler {
 	
 	 @Override
     protected void handleReaderIdle(ChannelHandlerContext ctx) {
+		 pool.closeConn(ctx.channel());
         super.handleReaderIdle(ctx);
         System.err.println("---client " + ctx.channel().remoteAddress().toString() + " reader timeout, close it---");
     }

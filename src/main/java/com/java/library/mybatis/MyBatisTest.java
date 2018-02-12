@@ -3,6 +3,7 @@ package com.java.library.mybatis;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -147,9 +148,38 @@ public class MyBatisTest {
 			writer.update(user);
 		}
 	}
+	
+	public static Timestamp cdate(int year, int month, int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(year, month - 1, day);
+		return new Timestamp(calendar.getTimeInMillis());
+	}
+	
+	public static void testCall2() {
+		SqlSession session = sessionFactory.openSession(false);
+		IPayTotalStatMapper mapper = session.getMapper(IPayTotalStatMapper.class);
+		PayTotalStat user = new PayTotalStat();
+		user.cdate = cdate(2018, 2, 2);
+		user.hour = 11;
+		user.operatorId = 2;
+		user.areaId = 37;
+		user.gameId = -8834480713977467200L;
+		user.channelName = "SNOWFISH";
+		try {
+			mapper.insertBatchOne(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//session.commit();select语句为false
+		session.commit(true); // 默认select不会提交事务
+	}
 
 	public static void main(String[] args) {
-		testQuery2();
+		testCall2();
 	}
 
 }

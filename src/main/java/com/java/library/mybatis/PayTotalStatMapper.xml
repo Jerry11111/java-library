@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.library.mybatis.IPayTotalStatMapper">
+	<resultMap id="PayTotalStatMap" type="com.java.library.mybatis.PayTotalStat">
+		<result property="cdate" column="cdate" />
+		<result property="hour" column="hour" />
+		<result property="operatorId" column="operator_id" />
+		<result property="areaId" column="area_id" />
+		<result property="gameId" column="game_id" />
+		<result property="channelName" column="channel_name" />
+		<result property="payUserCnt" column="pay_user_cnt" />
+	</resultMap>
+	
+ 	<insert id="insertBatchOne" parameterType="com.java.library.mybatis.PayTotalStat" statementType="CALLABLE">
+ 	<!--  
+ 		INSERT INTO t_pay_total_stat(cdate, hour, operator_id, area_id, game_id, channel_name, pay_user_cnt)
+    		VALUES (#{cdate}, #{hour}, #{operatorId}, #{areaId}, #{gameId}, #{channelName}, #{payUserCnt})
+    -->
+    {CALL insert_or_update_t_pay_total_stat ((#{cdate})::timestamp without time zone, (#{hour})::integer, (#{operatorId})::integer, (#{areaId})::integer, (#{gameId})::bigint, (#{channelName})::text, (#{payUserCnt})::integer)}
+ 	</insert>
+ 	
+ 	<insert id="updateBatchOne" parameterType="com.java.library.mybatis.PayTotalStat" statementType="CALLABLE">
+ 	<!--  
+ 		UPDATE t_pay_total_stat SET 
+	 		pay_user_cnt=#{payUserCnt}
+  		WHERE cdate=#{cdate} AND hour = #{hour} AND operator_id=#{operatorId} AND area_id=#{areaId} AND game_id=#{gameId} AND channel_name=#{channelName}
+  	-->
+  	{CALL insert_or_update_t_pay_total_stat ((#{cdate})::timestamp without time zone, (#{hour})::integer, (#{operatorId})::integer, (#{areaId})::integer, (#{gameId})::bigint, (#{channelName})::text, (#{payUserCnt})::integer)}
+ 	</insert>
+ 	
+</mapper>

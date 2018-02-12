@@ -11,6 +11,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
 public class NIOServer {
@@ -34,11 +36,12 @@ public class NIOServer {
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(boss, group).channel(NioServerSocketChannel.class).localAddress(new InetSocketAddress(port))
+					.handler(new LoggingHandler(LogLevel.DEBUG))
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(new IdleStateHandler(10, 0, 0));
 							ch.pipeline().addLast(new SelfDefineEncodeHandler());
+							ch.pipeline().addLast(new IdleStateHandler(10, 0, 0));
 							ch.pipeline().addLast(serverHandler);
 						}
 					});
