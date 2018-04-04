@@ -54,6 +54,7 @@ public class MyBatisTest {
 		int res = mapper.addUser(user );
 		session.commit();
 		System.out.println(res);
+		System.out.println(user.userId);
 	}
 	
 	public static void testCall() {
@@ -177,9 +178,21 @@ public class MyBatisTest {
 		//session.commit();select语句为false
 		session.commit(true); // 默认select不会提交事务
 	}
+	
+	public static void testUpdate2() {
+		SqlSession session = sessionFactory.openSession(false);
+		GWPServiceMapper mapper = session.getMapper(GWPServiceMapper.class);
+		M10086Log log = new M10086Log();
+		log.imsi = 0;
+		log.phone = "";
+		log._time = System.currentTimeMillis();
+		mapper.addM10086Log(log);
+		session.commit();
+		System.out.println(log.logId);
+	}
 
 	public static void main(String[] args) {
-		testCall2();
+		testUpdate2();
 	}
 
 }

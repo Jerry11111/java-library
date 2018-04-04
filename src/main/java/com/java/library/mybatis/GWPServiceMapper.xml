@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.library.mybatis.GWPServiceMapper">
+	<sql id="area_table">t_area</sql>
+	<sql id="imsi_area_table">t_imsi_area</sql>
+	<sql id="ipv4_area_table">t_ipv4_area</sql>
+	<sql id="code_subscription_table">t_code_subscription</sql>
+	<sql id="m10086_code_table">t_m10086_code</sql>
+	<sql id="m10086_log_table">t_m10086_log</sql>
+	<sql id="m10086_log_sync_table">t_m10086_log_sync</sql>
+	<sql id="m10086_log_sync_ex_table">t_m10086_log_sync_ex</sql>
+	<sql id="sms_router_table">t_sms_router</sql>
+	<sql id="phone_table">t_phone</sql>
+	<sql id="system_config_table">t_system_config</sql>
+	<sql id="meta_table">t_table_meta</sql>
+	
+	
+<insert id="addM10086Log" parameterType="com.java.library.mybatis.M10086Log" useGeneratedKeys="true" keyProperty= "logId" keyColumn="log_id">
+	INSERT INTO t_m10086_log(
+            log_imsi, log_phone, log_time, log_duration, log_result, log_detail, 
+            log_area_id, log_area_name, log_code_id, log_device_id, log_trade, log_operator,
+            log_code_owner_id, transaction_id)
+    VALUES (#{imsi}, #{phone}, #{time}, #{duration}, #{result}, #{detail}, 
+            #{areaId}, #{areaName}, #{codeId}, #{deviceId}, #{tradeId}, #{operator},
+            #{ownerId}, #{transactionId})		
+</insert>
+	
+</mapper>
