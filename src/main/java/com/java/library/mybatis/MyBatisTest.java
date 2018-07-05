@@ -225,8 +225,9 @@ public class MyBatisTest {
 		}
 	}
 
+
 	public static void main(String[] args) {
-		testBatch7();
+		testUpdate2();
 	}
 
 }
