@@ -1,4 +1,4 @@
-package com.java.library.netty.nio;
+package com.java.library.netty.socks5;
 
 import java.net.InetSocketAddress;
 
@@ -9,21 +9,24 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.socks.SocksCmdRequestDecoder;
+import io.netty.handler.codec.socks.SocksInitRequestDecoder;
+import io.netty.handler.codec.socks.SocksMessageEncoder;
 
-public class EchoServer {
-	private final int port;
+public class Socks5Server {
+	private int port = 1080;
 
-	public EchoServer(int port) {
+	public Socks5Server(int port) {
 		this.port = port;
 	}
 
 	public static void main(String[] args) throws Exception {
-		int port = 8080;
-		new EchoServer(port).start();
+		int port = 1080;
+		new Socks5Server(port).start();
 	}
 
 	public void start() throws Exception {
-		final EchoServerHandler serverHandler = new EchoServerHandler();
+		final SocksInitRequestHandler serverHandler = new SocksInitRequestHandler();
 		EventLoopGroup boss = new NioEventLoopGroup(1);
 		EventLoopGroup group = new NioEventLoopGroup(10);
 		try {
@@ -32,7 +35,12 @@ public class EchoServer {
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(serverHandler);
+							ch.pipeline().addLast(new SocksMessageEncoder());
+							ch.pipeline().addLast(new SocksInitRequestDecoder());
+							ch.pipeline().addLast(new SocksInitRequestHandler());
+							ch.pipeline().addLast(new SocksCmdRequestDecoder());
+							ch.pipeline().addLast(new SocksCmdRequestHandler());
+							//ch.pipeline().addLast(serverHandler);
 						}
 					});
 			System.out.println(String.format("NIO Sever start at %d", port));

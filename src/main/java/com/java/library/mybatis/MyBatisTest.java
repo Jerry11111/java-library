@@ -13,6 +13,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.java.library.mybatis.MyBatisMultiBatchWriter.Entity;
 import com.snowfish.framework.mybatis.MyBatisBatchWriter;
 import com.snowfish.framework.mybatis.MyBatisTxManager;
 import com.snowfish.framework.mybatis.MyBatisTxSqlSessionFactory;
@@ -54,6 +55,7 @@ public class MyBatisTest {
 		int res = mapper.addUser(user );
 		session.commit();
 		System.out.println(res);
+		System.out.println(user.userId);
 	}
 	
 	public static void testCall() {
@@ -177,9 +179,54 @@ public class MyBatisTest {
 		//session.commit();select语句为false
 		session.commit(true); // 默认select不会提交事务
 	}
+	
+	public static void testUpdate2() {
+		SqlSession session = sessionFactory.openSession(false);
+		GWPServiceMapper mapper = session.getMapper(GWPServiceMapper.class);
+		M10086Log log = new M10086Log();
+		log.imsi = 0;
+		log.phone = "";
+		log._time = System.currentTimeMillis();
+		mapper.addM10086Log(log);
+		session.commit();
+		System.out.println(log.logId);
+	}
+	
+	
+	public static void testBatch7() {
+		MyBatisTxManager txManager = new MyBatisTxManager();
+		MyBatisTxSqlSessionFactory sessionFactory = new MyBatisTxSqlSessionFactory("com/java/library/mybatis/mybatis.xml", "local");
+		sessionFactory.setTxManager(txManager);
+		StorageWriter writer = new StorageWriter();
+		writer.init();
+		MyBatisMultiBatchWriter mw = new MyBatisMultiBatchWriter();
+		mw.setSqlSessionFactory(sessionFactory);
+		writer.setMaxBatchItems(50);
+		writer.setFlushThreshold(50);
+		writer.setWritebackInterval(5000);
+		writer.setBatchWriter(mw);
+		for(int i = 0; i < 10; i++) {
+			User user = new User();
+			user.username = "root" + i;
+			user.password = "root" + i;
+			Entity entity = new Entity();
+			entity.parameter = user;
+			entity.statement = "com.java.library.mybatis.UserMapper.addUser";
+			writer.add(entity);
+		}
+		for(int i = 0; i < 10; i++) {
+			User user = new User();
+			user.username = "roots" + i;
+			user.password = "roots" + i;
+			Entity entity = new Entity();
+			entity.parameter = user;
+			entity.statement = "com.java.library.mybatis.UserMapper.addUser2";
+			writer.add(entity);
+		}
+	}
 
 	public static void main(String[] args) {
-		testCall2();
+		testBatch7();
 	}
 
 }

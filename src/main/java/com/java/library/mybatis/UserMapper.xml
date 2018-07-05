@@ -12,7 +12,7 @@
     	SELECT * from t_user
     </select>
     
-    <insert id="addUser" parameterType="com.java.library.mybatis.User">
+    <insert id="addUser" parameterType="com.java.library.mybatis.User" useGeneratedKeys="true" keyProperty= "userId">
         INSERT INTO t_user(username, password) values(#{username}, #{password})
     </insert>
     

@@ -15,16 +15,17 @@
 		<environment id="local">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-			<!--  
+			
 				<property name="driver" value="org.postgresql.Driver" />
 				<property name="url" value="jdbc:postgresql://localhost:5432/test_db" />
 				<property name="username" value="test" />
 				<property name="password" value="test" />
-			-->
+			<!--  
 				<property name="driver" value="org.postgresql.Driver" />
-				<property name="url" value="jdbc:postgresql://10.12.2.114:5432/Service2Sync" />
-				<property name="username" value="service2sync_admin" />
-				<property name="password" value="service2sync_admin" />
+				<property name="url" value="jdbc:postgresql://10.12.6.91:5432/gwpsvc_db" />
+				<property name="username" value="gwpsvc_admin" />
+				<property name="password" value="gwpsvc_admin" />
+			-->
 				<property name="poolPingQuery" value="SELECT 1" />
 	            <property name="poolPingEnabled" value="true" />
 	            <property name="poolPingConnectionsNotUsedFor" value="30000" />
@@ -74,6 +75,7 @@
 	<mappers>
 		<mapper resource="com/java/library/mybatis/UserMapper.xml"/>
 		<mapper resource="com/java/library/mybatis/PayTotalStatMapper.xml"/>
+		<mapper resource="com/java/library/mybatis/GWPServiceMapper.xml"/>
 	</mappers>
 	
 </configuration>

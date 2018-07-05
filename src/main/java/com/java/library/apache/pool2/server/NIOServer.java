@@ -1,4 +1,4 @@
-package com.java.library.netty.nio;
+package com.java.library.apache.pool2.server;
 
 import java.net.InetSocketAddress;
 
@@ -9,33 +9,41 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
-public class EchoServer {
+public class NIOServer {
 	private final int port;
+	public NIOServerPool pool = new NIOServerPool();
 
-	public EchoServer(int port) {
+	public NIOServer(int port) {
 		this.port = port;
 	}
 
 	public static void main(String[] args) throws Exception {
-		int port = 8080;
-		new EchoServer(port).start();
+		int port = 8000;
+		new NIOServer(port).start();
 	}
 
 	public void start() throws Exception {
-		final EchoServerHandler serverHandler = new EchoServerHandler();
+		final NIOServerHandler serverHandler = new NIOServerHandler("server");
+		serverHandler.pool = pool;
 		EventLoopGroup boss = new NioEventLoopGroup(1);
 		EventLoopGroup group = new NioEventLoopGroup(10);
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(boss, group).channel(NioServerSocketChannel.class).localAddress(new InetSocketAddress(port))
+					.handler(new LoggingHandler(LogLevel.DEBUG))
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
+							ch.pipeline().addLast(new ByteDecoder());
+							ch.pipeline().addLast(new IdleStateHandler(10, 0, 0));
 							ch.pipeline().addLast(serverHandler);
 						}
 					});
-			System.out.println(String.format("NIO Sever start at %d", port));
+			System.out.println(String.format("NIO Severt start at %d", port));
 			ChannelFuture f = b.bind().sync();
 			f.channel().closeFuture().sync();
 		} finally {

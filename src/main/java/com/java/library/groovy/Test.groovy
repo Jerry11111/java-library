@@ -1,8 +1,10 @@
 package com.java.library.groovy
 
 import java.sql.Timestamp
+import org.codehaus.groovy.runtime.*
+
 def abc = 'abc'
-println  'Hello World!${abc}' // 
+println  'Hello World!${abc}' //
 println  "Hello World!${abc}" // 引用外部变量 必须使用双引号
 println new Timestamp(System.currentTimeMillis())
 User user = new User()
@@ -14,7 +16,8 @@ user2.userId = 2;
 user2.userName = 'test2';
 def alist = [user, user2];
 alist.each{item -> println item.userId + ':' + item.userName}
+ 
+//File file = new File('ip.txt')
+//file.eachLine("GBK") {line, no -> println no + ' ' +  line}
 
-File file = new File('ip.txt')
-file.eachLine("GBK") {line, no -> println no + ' ' +  line}
-
+InvokerHelper.invokeMethod(null, "println", {"Hello"}); // Java

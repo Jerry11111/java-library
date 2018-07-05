@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 
 public class JdbcTest {
@@ -39,9 +40,9 @@ public class JdbcTest {
 			conn = DriverManager.getConnection(url, info);
 			conn.setAutoCommit(false);
 			// 3.创建预处理语句对象
-			//stm = conn.prepareStatement(sql);
+			stm = conn.prepareStatement(sql);
 			// 针对大结果集
-			stm = conn.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
+			//stm = conn.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
 			stm.setFetchSize(3);
 			// 4.执行查询
 			rs = stm.executeQuery();
@@ -60,6 +61,66 @@ public class JdbcTest {
 					System.out.println(String.format("[%d %s %s]", i, columnName, value));
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// 5.释放数据库连接
+			if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+
+			if (stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+		}
+	}
+	
+	public static void testSelect2() {
+		// 获取数据库连接
+		String driver = "org.postgresql.Driver";
+		String user = "test";
+		String password = "test";
+		String url = "jdbc:postgresql://localhost:5432/test_db";
+
+		String sql = "SELECT PG_SLEEP(1);";
+		String sql2 = "SELECT PG_SLEEP(10);";
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			Class.forName(driver);
+			java.util.Properties info = new java.util.Properties();
+			info.put("user", user);
+			info.put("password", password);
+			conn = DriverManager.getConnection(url, info);
+			conn.setAutoCommit(false);
+			stm = conn.prepareStatement(sql2);
+			Statement st = conn.createStatement();
+			st.execute(sql);
+			rs = stm.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			while (rs.next()) {
+				for(int i = 1; i <= columnCount; i++) {
+					Object value = rs.getObject(i);
+					String columnName = rsmd.getColumnName(i);
+					System.out.println(String.format("[%d %s %s]", i, columnName, value));
+				}
+			}
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -277,7 +338,7 @@ public class JdbcTest {
 	}
 
 	public static void main(String[] args) {
-		testCall3();
+		testSelect2();
 
 	}
 
